@@ -1,5 +1,3 @@
-import { SelectOptions } from "@/lib/types";
-import { User } from "@prisma/client";
 import * as z from "zod";
 
 const MAX_FILE_SIZE = 4; // In Megabytes
@@ -38,21 +36,4 @@ export const RegisterSchema = z.object({
                 ACCEPTED_IMAGE_TYPES.includes(file.type)
             );
         }, "File type is not supported"),
-});
-
-const MemberInfoSchema = z.object({
-    username: z.string(),
-    image: z.string(),
-    email: z.string(),
-});
-
-export const CreateGroupSchema = z.object({
-    username: z.string().min(1, { message: "Group name cannot be empty" }),
-    members: z.array(MemberInfoSchema).min(1, "Minimum 1 person is required"),
-});
-
-
-export const CreateChannelSchema = z.object({
-    name: z.string().min(1, { message: "Channel name cannot be empty" }),
-    isPrivate:z.boolean(),
 });

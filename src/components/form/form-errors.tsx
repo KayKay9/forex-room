@@ -1,6 +1,3 @@
-import { XCircle } from "lucide-react";
-import { FieldErrors } from "react-hook-form";
-
 import { ShieldAlert } from "lucide-react";
 
 interface FormErrorProps {
