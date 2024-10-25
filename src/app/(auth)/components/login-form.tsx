@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import { FormSubmit } from "@/components/form/form-submit";
 import { FormErrors } from "@/components/form/form-errors";
 
+export const maxDuration = 5;
 export const LoginForm = () => {
     const [loading, setLoading] = useState(false);
     const [isPending, startTransition] = useTransition();
