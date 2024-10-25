@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewsFeatures = ["mongodb"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  username       String?
+  email          String?   @unique
+  emailVerified  DateTime?
+  image          String?
+  hashedPassword String?
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  channels       Channel[]
+
+  channelMemberIds String[]  @db.ObjectId
+  channelMembers  Channel[]  @relation("Member", fields: [channelMemberIds], references: [id])
+
+  messages       Message[]
+
+  role    Role     @default(GUEST)
+}
+
+
+model Channel {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  name      String 
+
+  lastMessageAt DateTime @default(now())
+  lastMessageId String?  @db.ObjectId
+
+  messageIds String[]  @db.ObjectId
+  messages   Message[]
+
+  createdById String @db.ObjectId
+  createdBy   User   @relation(fields: [createdById], references: [id], onDelete: Cascade)
+
+  memberIds String[] @db.ObjectId
+  members    User[]   @relation("Member", fields: [memberIds], references: [id])
+  isPrivate           Boolean?
+
+  createdAt DateTime @default(now())
+}
+
+model Message {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  message    String
+
+  senderId   String @db.ObjectId
+  sender     User   @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  channelId  String  @db.ObjectId
+  channel    Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ForexData {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  pair      String  @unique
+  bidPrice  Float
+  askPrice  Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  GUEST
+  ADMIN
+  TRADER
+}
